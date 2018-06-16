@@ -1935,7 +1935,9 @@ Section Language.
     (fold_right (fun m acc => x == m \/ acc)%expr #vfalse)%expr.
 
   Section Holes.
-    Inductive expr_with_hole {hole : type} : type -> Type :=
+    Section abstract_over_hole.
+    Context {hole : type}.
+    Inductive expr_with_hole : type -> Type :=
     | ewh_const {t} (_:forall eta, interp_type t eta) : expr_with_hole t
     | ewh_random (idx:positive) : expr_with_hole trand
     | ewh_adversarial {t1 t2} (_:expr_with_hole t1) : expr_with_hole t2
@@ -1944,6 +1946,7 @@ Section Language.
     | ewh_pair {t1 t2} (_:expr_with_hole t1) (_:expr_with_hole t2)
       : expr_with_hole (t1 * t2)
     | ewh_hole : expr_with_hole hole.
+    End abstract_over_hole.
     Global Arguments expr_with_hole : clear implicits.
 
     Fixpoint fill_hole {hole t}
